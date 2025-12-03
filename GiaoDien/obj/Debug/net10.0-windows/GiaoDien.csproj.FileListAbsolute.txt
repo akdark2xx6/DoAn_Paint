@@ -1,0 +1,85 @@
+C:\Users\ADMIN\source\repos\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.exe
+C:\Users\ADMIN\source\repos\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.deps.json
+C:\Users\ADMIN\source\repos\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.runtimeconfig.json
+C:\Users\ADMIN\source\repos\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\source\repos\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.Form1.resources
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.GenerateResource.cache
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfoInputs.cache
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfo.cs
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\refint\GiaoDien.dll
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.genruntimeconfig.cache
+C:\Users\ADMIN\source\repos\GiaoDien\obj\Debug\net10.0-windows\ref\GiaoDien.dll
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.exe
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.deps.json
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.runtimeconfig.json
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.GenerateResource.cache
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfoInputs.cache
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfo.cs
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\refint\GiaoDien.dll
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.genruntimeconfig.cache
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\ref\GiaoDien.dll
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.Properties.Resources.resources
+C:\Users\ADMIN\source\repos\DoAn\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.MainWindow.resources
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.exe
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.deps.json
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.runtimeconfig.json
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.MainWindow.resources
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.Properties.Resources.resources
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.GenerateResource.cache
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\refint\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.genruntimeconfig.cache
+C:\Users\ADMIN\Desktop\DoAn.test\GiaoDien\obj\Debug\net10.0-windows\ref\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.exe
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.deps.json
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.runtimeconfig.json
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.MainWindow.resources
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.Properties.Resources.resources
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.GenerateResource.cache
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\refint\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.genruntimeconfig.cache
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\ref\GiaoDien.dll
+C:\Users\ADMIN\Desktop\DoAn.real\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.sourcelink.json
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.MainWindow.resources
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.Properties.Resources.resources
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.GenerateResource.cache
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\refint\GiaoDien.dll
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.exe
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.deps.json
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.runtimeconfig.json
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.dll
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\bin\Debug\net10.0-windows\GiaoDien.pdb
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\GiaoDien.genruntimeconfig.cache
+C:\Users\ADMIN\Desktop\New folder\pha hoai\GiaoDien\obj\Debug\net10.0-windows\ref\GiaoDien.dll
