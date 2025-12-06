@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.Devices;
 using System.ComponentModel;  
 using System.Drawing;        
 using System.Drawing.Drawing2D;
@@ -65,6 +66,8 @@ namespace GiaoDien
         //}
 
         private Rectangle rt;
+        public Rectangle rt_data { get => rt; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -102,6 +105,7 @@ namespace GiaoDien
             lineButton.BackColor = SystemColors.ControlLight;
             curveButton.BackColor = SystemColors.ControlLight;
             Select.BackColor = SystemColors.ControlLight;
+            Invalidate();
         }
 
         public void SaveHistory()
@@ -236,18 +240,22 @@ namespace GiaoDien
             unpickingAll();
             picking(Select);
             using_ = new Select(this);
+            Invalidate();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             e.Graphics.DrawImage(drawZone, 70, 27);
-            
             handles[2] = new Rectangle(rt.Location.X + rt.Width, rt.Location.Y + rt.Height, HANDLE_SIZE, HANDLE_SIZE);
             handles[1] = new Rectangle(rt.Location.X + rt.Width / 2, rt.Location.Y + rt.Height, HANDLE_SIZE, HANDLE_SIZE);
             handles[0] = new Rectangle(rt.Location.X + rt.Width, rt.Location.Y + rt.Height / 2, HANDLE_SIZE, HANDLE_SIZE);
             using_.OnPaint_(e);
-            foreach (Rectangle rec in handles)
-                e.Graphics.FillRectangle(Brushes.LightBlue, rec);
+            if (Select.BackColor == SystemColors.ControlLight) 
+            {
+                foreach (Rectangle rec in handles)
+                    e.Graphics.FillRectangle(Brushes.LightBlue, rec);
+            }
+
 
         }
 
@@ -291,6 +299,10 @@ namespace GiaoDien
 
         private void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
+            if ((e.Location.X - 70) < 0 || (e.Location.Y - 27) < 0|| (e.Location.X) > rt.X + rt.Width || (e.Location.Y) > rt.Y + rt.Height)
+                toolStripStatusLabel1.Text = "";
+            else
+                toolStripStatusLabel1.Text = (e.Location.X - 70).ToString() + ", " + (e.Location.Y - 27).ToString();
             SetCursor(e.Location);
             if (e.Button == MouseButtons.Left && isResize == true)
             {
@@ -334,7 +346,7 @@ namespace GiaoDien
 
         private void MainWindow_MouseDown(object sender, MouseEventArgs e)
         {
-            if (GetActiveHandle(e.Location) != (int)ResizeHandle.None)
+            if (GetActiveHandle(e.Location) != (int)ResizeHandle.None && Select.BackColor == SystemColors.ControlLight)
             {
                 isResize = true;
                 firstPoint = e.Location;

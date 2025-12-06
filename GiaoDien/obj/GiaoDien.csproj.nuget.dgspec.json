@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {}
+    "C:\\Users\\ADMIN\\Desktop\\PHÁ\\GiaoDien\\GiaoDien.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {
+    "C:\\Users\\ADMIN\\Desktop\\PHÁ\\GiaoDien\\GiaoDien.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
+        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\PHÁ\\GiaoDien\\GiaoDien.csproj",
         "projectName": "GiaoDien",
-        "projectPath": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
+        "projectPath": "C:\\Users\\ADMIN\\Desktop\\PHÁ\\GiaoDien\\GiaoDien.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\obj\\",
+        "outputPath": "C:\\Users\\ADMIN\\Desktop\\PHÁ\\GiaoDien\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

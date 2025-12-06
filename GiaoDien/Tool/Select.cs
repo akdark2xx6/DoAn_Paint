@@ -90,7 +90,14 @@ namespace GiaoDien
                     int y = Math.Min(firstPoint.Y, mouse.Y);
                     int w = Math.Abs(mouse.X - firstPoint.X);
                     int h = Math.Abs(mouse.Y - firstPoint.Y);
-
+                    if (x + w > owner.rt_data.Width)
+                    {
+                        w = owner.rt_data.X - x;
+                    }
+                    if (y + h > owner.rt_data.Height)
+                    {
+                        h = owner.rt_data.Y - y;
+                    }
                     if (w > 0 && h > 0)
                         selectionRect = new Rectangle(x, y, w, h);
 
