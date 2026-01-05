@@ -1,3 +1,4 @@
+using GiaoDien.Tool;
 using Microsoft.VisualBasic.Devices;
 using System.ComponentModel;  
 using System.Drawing;        
@@ -48,22 +49,18 @@ namespace GiaoDien
             BottomCenter = 1,
             BottomRight = 2,
         }
-        //
-        //private void InitializeHandles()
-        //{
-        //    handles = new Rectangle[3];
-        //    for (int i = 0; i < 3; i++)
-        //    {
-        //        handles[i] = new Rectangle(); // Khởi tạo rỗng
-        //    }
-        //    using (SolidBrush handleBrush = new SolidBrush(Color.DarkBlue)) // Màu xanh đậm cho handles
-        //    {
-        //        foreach (Rectangle handle in handles)
-        //        {
-        //            g.FillRectangle(handleBrush, handle);//??
-        //        }
-        //    }
-        //}
+
+
+        public void CutCopy_Unenable()
+        {
+            cutToolStripMenuItem.Enabled = false;
+            copyToolStripMenuItem.Enabled = false;
+        }
+        public void CutCopy_Enable()
+        {
+            cutToolStripMenuItem.Enabled = true;
+            copyToolStripMenuItem.Enabled = true;
+        }
 
         private Rectangle rt;
         public Rectangle rt_data { get => rt; }
@@ -116,21 +113,6 @@ namespace GiaoDien
 
             // Khi vẽ nét mới thì redoStack phải bị xóa sạch (logic chuẩn của Undo)
             redoStack.Clear();
-        }
-
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            using_.MouseDown(sender, e);
-        }
-
-        private void Form1_MouseMove(object sender, MouseEventArgs e)
-        {
-            using_.MouseMove(sender, e);
-        }
-
-        private void Form1_MouseUp(object sender, MouseEventArgs e)
-        {
-            using_.MouseUp(sender, e);
         }
 
         private void shapeButton_Click(object sender, EventArgs e)
@@ -192,6 +174,7 @@ namespace GiaoDien
         {
             unpickingAll();
             picking(fillButton);
+            using_ = new FillColor(this);
         }
 
         private void textButton_Click(object sender, EventArgs e)
@@ -250,19 +233,19 @@ namespace GiaoDien
             handles[1] = new Rectangle(rt.Location.X + rt.Width / 2, rt.Location.Y + rt.Height, HANDLE_SIZE, HANDLE_SIZE);
             handles[0] = new Rectangle(rt.Location.X + rt.Width, rt.Location.Y + rt.Height / 2, HANDLE_SIZE, HANDLE_SIZE);
             using_.OnPaint_(e);
-            if (Select.BackColor == SystemColors.ControlLight) 
+            if (Select.BackColor == SystemColors.ControlLight)
             {
                 foreach (Rectangle rec in handles)
-                    e.Graphics.FillRectangle(Brushes.LightBlue, rec);
+                    e.Graphics.FillRectangle(Brushes.DarkBlue, rec);
             }
-
-
+            if (isResize)
+            {
+                Pen pen_ = new Pen(Color.Black, 2);
+                pen_.DashStyle = DashStyle.Dot;
+                e.Graphics.DrawRectangle(pen, rt);
+            }
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
         private int GetActiveHandle(Point mouseLocation)
         {
             for (int i = 0; i < handles.Length; i++)
@@ -299,45 +282,32 @@ namespace GiaoDien
 
         private void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Location.X - 70) < 0 || (e.Location.Y - 27) < 0|| (e.Location.X) > rt.X + rt.Width || (e.Location.Y) > rt.Y + rt.Height)
+            if ((e.Location.X - 70) < 0 || (e.Location.Y - 27) < 0 || (e.Location.X) > rt.X + rt.Width || (e.Location.Y) > rt.Y + rt.Height)
                 toolStripStatusLabel1.Text = "";
             else
                 toolStripStatusLabel1.Text = (e.Location.X - 70).ToString() + ", " + (e.Location.Y - 27).ToString();
             SetCursor(e.Location);
             if (e.Button == MouseButtons.Left && isResize == true)
             {
+
+                int dx = e.X - firstPoint.X;
+                int dy = e.Y - firstPoint.Y;
+                firstPoint = e.Location;
+                switch ((ResizeHandle)activeHandle)
                 {
-                    int dx = e.X - firstPoint.X;
-                    int dy = e.Y - firstPoint.Y;
-                    firstPoint = e.Location;
-                    switch ((ResizeHandle)activeHandle)
-                    {
-                        case ResizeHandle.MiddleRight:
-                            rt.Width += dx;
-                            break;
+                    case ResizeHandle.MiddleRight:
+                        rt.Width += dx;
+                        break;
 
-                        case ResizeHandle.BottomCenter:
-                            rt.Height += dy;
-                            break;
-                        case ResizeHandle.BottomRight:
-                            rt.Width += dx; rt.Height += dy;
-                            break;
-                    }
-                    //Rectangle rectScreen = new Rectangle(
-                    //     selectionRect.X + OFFSET_X,
-                    //     selectionRect.Y + OFFSET_Y,
-                    //     selectionRect.Width,
-                    //     selectionRect.Height
-                    // );
-
-                    //using (Pen pen = new Pen(Color.Black, 2))
-                    //{
-                    //    pen.DashStyle = DashStyle.Dot;
-                    //    g.DrawRectangle(pen, rectScreen);
-                    //}
-
-                    Invalidate();
+                    case ResizeHandle.BottomCenter:
+                        rt.Height += dy;
+                        break;
+                    case ResizeHandle.BottomRight:
+                        rt.Width += dx; rt.Height += dy;
+                        break;
                 }
+                Invalidate();
+
             }
             else
                 using_.MouseMove(sender, e);
@@ -346,6 +316,10 @@ namespace GiaoDien
 
         private void MainWindow_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+            {
+                SaveHistory();
+            }
             if (GetActiveHandle(e.Location) != (int)ResizeHandle.None && Select.BackColor == SystemColors.ControlLight)
             {
                 isResize = true;
@@ -501,6 +475,20 @@ namespace GiaoDien
                 future.Dispose();
                 Invalidate();
             }
+        }
+
+        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Application.OpenForms.Count == 0)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MainWindow newTab = new MainWindow();
+            newTab.Show();
         }
     }
 }

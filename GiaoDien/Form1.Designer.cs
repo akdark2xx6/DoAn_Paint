@@ -56,7 +56,6 @@
             colorButton = new Button();
             pickColorButton = new Button();
             shapeButton = new Button();
-            textButton = new Button();
             eraserButton = new Button();
             fillButton = new Button();
             pencilButton = new Button();
@@ -93,22 +92,24 @@
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
             newToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            newToolStripMenuItem.Size = new Size(180, 22);
+            newToolStripMenuItem.Size = new Size(146, 22);
             newToolStripMenuItem.Text = "New";
+            newToolStripMenuItem.Click += newToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.O;
-            toolStripMenuItem1.Size = new Size(180, 22);
+            toolStripMenuItem1.Size = new Size(146, 22);
             toolStripMenuItem1.Text = "Open";
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            saveToolStripMenuItem.Size = new Size(180, 22);
+            saveToolStripMenuItem.Size = new Size(146, 22);
             saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // editToolStripMenuItem
             // 
@@ -119,17 +120,19 @@
             // 
             // cutToolStripMenuItem
             // 
+            cutToolStripMenuItem.Enabled = false;
             cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             cutToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
-            cutToolStripMenuItem.Size = new Size(144, 22);
+            cutToolStripMenuItem.Size = new Size(180, 22);
             cutToolStripMenuItem.Text = "Cut";
             cutToolStripMenuItem.Click += cutToolStripMenuItem_Click;
             // 
             // copyToolStripMenuItem
             // 
+            copyToolStripMenuItem.Enabled = false;
             copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             copyToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-            copyToolStripMenuItem.Size = new Size(144, 22);
+            copyToolStripMenuItem.Size = new Size(180, 22);
             copyToolStripMenuItem.Text = "Copy";
             copyToolStripMenuItem.Click += copyToolStripMenuItem_Click;
             // 
@@ -137,7 +140,7 @@
             // 
             pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             pasteToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-            pasteToolStripMenuItem.Size = new Size(144, 22);
+            pasteToolStripMenuItem.Size = new Size(180, 22);
             pasteToolStripMenuItem.Text = "Paste";
             pasteToolStripMenuItem.Click += pasteToolStripMenuItem_Click;
             // 
@@ -145,7 +148,7 @@
             // 
             undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             undoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Z;
-            undoToolStripMenuItem.Size = new Size(144, 22);
+            undoToolStripMenuItem.Size = new Size(180, 22);
             undoToolStripMenuItem.Text = "Undo";
             undoToolStripMenuItem.Click += undoToolStripMenuItem_Click;
             // 
@@ -153,7 +156,7 @@
             // 
             redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             redoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Y;
-            redoToolStripMenuItem.Size = new Size(144, 22);
+            redoToolStripMenuItem.Size = new Size(180, 22);
             redoToolStripMenuItem.Text = "Redo";
             redoToolStripMenuItem.Click += redoToolStripMenuItem_Click;
             // 
@@ -168,7 +171,6 @@
             panel1.Controls.Add(colorButton);
             panel1.Controls.Add(pickColorButton);
             panel1.Controls.Add(shapeButton);
-            panel1.Controls.Add(textButton);
             panel1.Controls.Add(eraserButton);
             panel1.Controls.Add(fillButton);
             panel1.Controls.Add(pencilButton);
@@ -184,7 +186,7 @@
             Select.FlatStyle = FlatStyle.Flat;
             Select.ForeColor = SystemColors.ControlLight;
             Select.Image = (Image)resources.GetObject("Select.Image");
-            Select.Location = new Point(3, 130);
+            Select.Location = new Point(3, 67);
             Select.Name = "Select";
             Select.Size = new Size(30, 30);
             Select.TabIndex = 10;
@@ -209,7 +211,7 @@
             brushPanel.BackColor = SystemColors.ControlDark;
             brushPanel.Controls.Add(label1);
             brushPanel.Controls.Add(trackBar1);
-            brushPanel.Location = new Point(4, 166);
+            brushPanel.Location = new Point(4, 139);
             brushPanel.Name = "brushPanel";
             brushPanel.Size = new Size(57, 142);
             brushPanel.TabIndex = 4;
@@ -244,7 +246,7 @@
             shapePanel.Controls.Add(polygonButton);
             shapePanel.Controls.Add(lineButton);
             shapePanel.Controls.Add(ellipseButton);
-            shapePanel.Location = new Point(4, 316);
+            shapePanel.Location = new Point(4, 295);
             shapePanel.Name = "shapePanel";
             shapePanel.Size = new Size(58, 85);
             shapePanel.TabIndex = 0;
@@ -383,21 +385,6 @@
             shapeButton.UseVisualStyleBackColor = false;
             shapeButton.Click += shapeButton_Click;
             // 
-            // textButton
-            // 
-            textButton.AllowDrop = true;
-            textButton.BackColor = SystemColors.ControlLight;
-            textButton.FlatStyle = FlatStyle.Flat;
-            textButton.ForeColor = SystemColors.ControlLight;
-            textButton.Image = Properties.Resources.text_fields_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24;
-            textButton.Location = new Point(3, 67);
-            textButton.Name = "textButton";
-            textButton.Size = new Size(30, 30);
-            textButton.TabIndex = 4;
-            textButton.Tag = "5";
-            textButton.UseVisualStyleBackColor = false;
-            textButton.Click += textButton_Click;
-            // 
             // eraserButton
             // 
             eraserButton.AllowDrop = true;
@@ -472,7 +459,7 @@
             MainMenuStrip = menuStrip1;
             Name = "MainWindow";
             Text = "Paint";
-            Paint += pictureBox1_Paint;
+            FormClosed += MainWindow_FormClosed;
             MouseDown += MainWindow_MouseDown;
             MouseMove += MainWindow_MouseMove;
             MouseUp += MainWindow_MouseUp;
@@ -498,7 +485,6 @@
         private Button fillButton;
         private Button pickColorButton;
         private Button shapeButton;
-        private Button textButton;
         private Button eraserButton;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem1;

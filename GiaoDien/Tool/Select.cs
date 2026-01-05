@@ -67,6 +67,8 @@ namespace GiaoDien
             firstPoint = mouse;
             isSelecting = true;
             selectionRect = new Rectangle(mouse.X, mouse.Y, 0, 0);
+            owner.CutCopy_Unenable();
+
         }
 
         public override void MouseMove(object sender, MouseEventArgs e)
@@ -90,14 +92,31 @@ namespace GiaoDien
                     int y = Math.Min(firstPoint.Y, mouse.Y);
                     int w = Math.Abs(mouse.X - firstPoint.X);
                     int h = Math.Abs(mouse.Y - firstPoint.Y);
-                    if (x + w > owner.rt_data.Width)
+
+                    int leftLimit = owner.rt_data.Left - 70;
+                    int topLimit = owner.rt_data.Top - 27;
+                    int rightLimit = owner.rt_data.Right - 70;
+                    int bottomLimit = owner.rt_data.Bottom - 27;
+
+                    if (x + w > rightLimit)
                     {
-                        w = owner.rt_data.X - x;
+                        w = rightLimit - x;
                     }
-                    if (y + h > owner.rt_data.Height)
+                    if (y + h > bottomLimit)
                     {
-                        h = owner.rt_data.Y - y;
+                        h = bottomLimit - y;
                     }
+                    if (x < 0)
+                    {
+                        w = firstPoint.X - leftLimit;
+                        x = leftLimit;
+                    }
+                    if (y < 0)
+                    {
+                        h = firstPoint.Y - topLimit;
+                        y = topLimit;
+                    }
+
                     if (w > 0 && h > 0)
                         selectionRect = new Rectangle(x, y, w, h);
 
@@ -173,6 +192,7 @@ namespace GiaoDien
         {
             if (isSelecting && selectionRect.Width > 0 && selectionRect.Height > 0)
             {
+                owner.CutCopy_Enable();
                 whiteRect = selectionRect;
 
                 isChoosingBitmap = new Bitmap(selectionRect.Width, selectionRect.Height);

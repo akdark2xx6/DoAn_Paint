@@ -126,10 +126,10 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="Select.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAABgSURBVEhL7ZBBCgAxCAN9wj6p//9U20D3OF1FvCwOFHNI
-        qNGaKM9+48yMRmSYZ2Y0QhtFNeIyAa6sDJ81AVe2vEH5BzL0ia5ZGfpE16wM/zlRRiMyvDUzGqGNorrx
-        YrYAEros7Y08SDkAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAGBJREFUSEvtkEEKADEIA33CPqn//1TbQPc4XUW8LA4Uc0io0Zooz37jzIxGZJhn
+        ZjRCG0U14jIBrqwMnzUBV7a8QfkHMvSJrlkZ+kTXrAz/OVFGIzK8NTMaoY2iuvFitgASuiztjTxIOQAA
+        AABJRU5ErkJggg==
 </value>
   </data>
   <data name="rectangleButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
