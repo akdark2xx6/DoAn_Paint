@@ -93,7 +93,6 @@ namespace GiaoDien
             pencilButton.BackColor = SystemColors.ControlLight;
             fillButton.BackColor = SystemColors.ControlLight;
             pickColorButton.BackColor = SystemColors.ControlLight;
-            textButton.BackColor = SystemColors.ControlLight;
             shapeButton.BackColor = SystemColors.ControlLight;
             rectangleButton.BackColor = SystemColors.ControlLight;
             ellipseButton.BackColor = SystemColors.ControlLight;
@@ -177,11 +176,7 @@ namespace GiaoDien
             using_ = new FillColor(this);
         }
 
-        private void textButton_Click(object sender, EventArgs e)
-        {
-            unpickingAll();
-            picking(textButton);
-        }
+
 
         private void polygonButton_Click(object sender, EventArgs e)
         {

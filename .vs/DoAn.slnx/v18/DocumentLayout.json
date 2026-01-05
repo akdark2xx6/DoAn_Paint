@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\admin\\desktop\\doan_paint\\giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\admin\\desktop\\doan_paint\\giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\admin\\desktop\\doan_paint\\giaodien\\tool\\ellipse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\tool\\ellipse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\admin\\desktop\\doan_paint\\giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\admin\\desktop\\doan_paint\\giaodien\\tool\\select.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
@@ -51,8 +51,7 @@
               "ViewState": "AgIAANEAAAAAAAAAAAAiwOYAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-06T05:37:41.363Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -65,8 +64,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-06T06:21:55.483Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -86,7 +84,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\Form1.cs",
               "RelativeDocumentMoniker": "GiaoDien\\Form1.cs",
@@ -98,7 +96,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Ellipse.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\Tool\\Ellipse.cs",
               "RelativeDocumentMoniker": "GiaoDien\\Tool\\Ellipse.cs",
@@ -106,18 +104,17 @@
               "RelativeToolTip": "GiaoDien\\Tool\\Ellipse.cs",
               "ViewState": "AgIAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-06T08:00:12.351Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-06T08:00:12.351Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\Form1.cs",
               "RelativeDocumentMoniker": "GiaoDien\\Form1.cs",
               "ToolTip": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\Form1.cs",
               "RelativeToolTip": "GiaoDien\\Form1.cs",
-              "ViewState": "AgIAANwBAAAAAAAAAADwv+wBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKgAAAAAAAAAAAAuwLIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-06T05:37:06.749Z",
               "EditorCaption": ""
@@ -132,8 +129,7 @@
               "RelativeToolTip": "GiaoDien\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-06T07:47:38.722Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-06T07:47:38.722Z"
             },
             {
               "$type": "Document",
@@ -145,8 +141,7 @@
               "RelativeToolTip": "GiaoDien\\Tool\\FillColor.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-06T08:00:18.629Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-06T08:00:18.629Z"
             }
           ]
         }
