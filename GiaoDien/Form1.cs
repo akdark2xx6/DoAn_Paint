@@ -485,5 +485,16 @@ namespace GiaoDien
             MainWindow newTab = new MainWindow();
             newTab.Show();
         }
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            using_.key_Keydown(sender, e);
+        }
+
+        private void TextButton_Click(object sender, EventArgs e)
+        {
+            unpickingAll();
+            picking(TextButton);
+            using_ = new Text(this);
+        }
     }
 }

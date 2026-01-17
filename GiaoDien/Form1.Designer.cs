@@ -41,6 +41,7 @@
             undoToolStripMenuItem = new ToolStripMenuItem();
             redoToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
+            TextButton = new Button();
             Select = new Button();
             pickingColor = new Button();
             brushPanel = new Panel();
@@ -123,7 +124,7 @@
             cutToolStripMenuItem.Enabled = false;
             cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             cutToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
-            cutToolStripMenuItem.Size = new Size(180, 22);
+            cutToolStripMenuItem.Size = new Size(144, 22);
             cutToolStripMenuItem.Text = "Cut";
             cutToolStripMenuItem.Click += cutToolStripMenuItem_Click;
             // 
@@ -132,7 +133,7 @@
             copyToolStripMenuItem.Enabled = false;
             copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             copyToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-            copyToolStripMenuItem.Size = new Size(180, 22);
+            copyToolStripMenuItem.Size = new Size(144, 22);
             copyToolStripMenuItem.Text = "Copy";
             copyToolStripMenuItem.Click += copyToolStripMenuItem_Click;
             // 
@@ -140,7 +141,7 @@
             // 
             pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             pasteToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-            pasteToolStripMenuItem.Size = new Size(180, 22);
+            pasteToolStripMenuItem.Size = new Size(144, 22);
             pasteToolStripMenuItem.Text = "Paste";
             pasteToolStripMenuItem.Click += pasteToolStripMenuItem_Click;
             // 
@@ -148,7 +149,7 @@
             // 
             undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             undoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Z;
-            undoToolStripMenuItem.Size = new Size(180, 22);
+            undoToolStripMenuItem.Size = new Size(144, 22);
             undoToolStripMenuItem.Text = "Undo";
             undoToolStripMenuItem.Click += undoToolStripMenuItem_Click;
             // 
@@ -156,7 +157,7 @@
             // 
             redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             redoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Y;
-            redoToolStripMenuItem.Size = new Size(180, 22);
+            redoToolStripMenuItem.Size = new Size(144, 22);
             redoToolStripMenuItem.Text = "Redo";
             redoToolStripMenuItem.Click += redoToolStripMenuItem_Click;
             // 
@@ -164,6 +165,7 @@
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             panel1.BackColor = SystemColors.ControlLight;
+            panel1.Controls.Add(TextButton);
             panel1.Controls.Add(Select);
             panel1.Controls.Add(pickingColor);
             panel1.Controls.Add(brushPanel);
@@ -178,6 +180,20 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(66, 485);
             panel1.TabIndex = 1;
+            // 
+            // TextButton
+            // 
+            TextButton.AllowDrop = true;
+            TextButton.BackColor = SystemColors.ControlLight;
+            TextButton.FlatStyle = FlatStyle.Flat;
+            TextButton.ForeColor = SystemColors.ControlLight;
+            TextButton.Image = Properties.Resources.text_fields_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24;
+            TextButton.Location = new Point(4, 133);
+            TextButton.Name = "TextButton";
+            TextButton.Size = new Size(30, 30);
+            TextButton.TabIndex = 11;
+            TextButton.UseVisualStyleBackColor = false;
+            TextButton.Click += TextButton_Click;
             // 
             // Select
             // 
@@ -211,7 +227,7 @@
             brushPanel.BackColor = SystemColors.ControlDark;
             brushPanel.Controls.Add(label1);
             brushPanel.Controls.Add(trackBar1);
-            brushPanel.Location = new Point(4, 139);
+            brushPanel.Location = new Point(4, 170);
             brushPanel.Name = "brushPanel";
             brushPanel.Size = new Size(57, 142);
             brushPanel.TabIndex = 4;
@@ -246,7 +262,7 @@
             shapePanel.Controls.Add(polygonButton);
             shapePanel.Controls.Add(lineButton);
             shapePanel.Controls.Add(ellipseButton);
-            shapePanel.Location = new Point(4, 295);
+            shapePanel.Location = new Point(4, 326);
             shapePanel.Name = "shapePanel";
             shapePanel.Size = new Size(58, 85);
             shapePanel.TabIndex = 0;
@@ -456,10 +472,12 @@
             Controls.Add(panel1);
             Controls.Add(menuStrip1);
             DoubleBuffered = true;
+            KeyPreview = true;
             MainMenuStrip = menuStrip1;
             Name = "MainWindow";
             Text = "Paint";
             FormClosed += MainWindow_FormClosed;
+            KeyDown += MainWindow_KeyDown;
             MouseDown += MainWindow_MouseDown;
             MouseMove += MainWindow_MouseMove;
             MouseUp += MainWindow_MouseUp;
@@ -512,5 +530,6 @@
         private ToolStripMenuItem newToolStripMenuItem;
         private Button Select;
         private ToolStripStatusLabel toolStripStatusLabel1;
+        private Button TextButton;
     }
 }

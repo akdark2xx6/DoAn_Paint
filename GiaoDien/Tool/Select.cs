@@ -49,6 +49,7 @@ namespace GiaoDien
 
             activeHandle = GetActiveHandle(e.Location);
 
+            // Nếu click vào handle (resize) — chuẩn bị kéo handle
             if (activeHandle != (int)ResizeHandle.None)
             {
                 firstPoint = mouse;
@@ -56,13 +57,23 @@ namespace GiaoDien
                 return;
             }
 
-            if (selectionRect.Contains(mouse))
+            // Nếu click vào vùng chọn hiện tại và có ảnh đang "nổi", cho phép di chuyển
+            if (selectionRect.Contains(mouse) && isChoosingBitmap != null)
             {
                 activeHandle = (int)ResizeHandle.Move;
                 firstPoint = mouse;
                 isSelecting = false;
                 return;
             }
+
+            // Bắt đầu một selection mới: loại bỏ selection "nổi" cũ
+            isChoosingBitmap = null;
+            selectionRect = Rectangle.Empty;
+            activeHandle = (int)ResizeHandle.None;
+            whiteRect = Rectangle.Empty;            
+            // Lưu snapshot nền hiện tại để thao tác tiếp theo không ghi chồng ảnh cũ
+            clone_currentBitmap = (Bitmap)owner.drawZone_data.Clone();
+            whiteRect = Rectangle.Empty;
 
             firstPoint = mouse;
             isSelecting = true;
@@ -249,6 +260,18 @@ namespace GiaoDien
                     }
                 }
             }
+
+            // nếu đang có ảnh dán/đang chọn, vẽ ảnh đó lên màn hình ngay lập tức
+            if (isChoosingBitmap != null && selectionRect.Width > 0 && selectionRect.Height > 0)
+            {
+                Rectangle dest = new Rectangle(
+                    selectionRect.X + OFFSET_X,
+                    selectionRect.Y + OFFSET_Y,
+                    selectionRect.Width,
+                    selectionRect.Height
+                );
+                g.DrawImage(isChoosingBitmap, dest);
+            }
         }
 
         private void UpdateHandles()
@@ -351,6 +374,23 @@ namespace GiaoDien
 
             // 5. Vẽ lại để hiển thị ảnh và khung chọn
             owner.Invalidate();
+        }
+        public override void key_Keydown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+            {
+                if (isChoosingBitmap != null)
+                {
+                    using (Graphics g = Graphics.FromImage(owner.drawZone_data))
+                    {
+                        g.FillRectangle(Brushes.White, selectionRect);
+                    }
+                    isChoosingBitmap = null;
+                    selectionRect = Rectangle.Empty;
+                    owner.Invalidate();
+                }
+            }
+            owner.Cursor = Cursors.Default;
         }
     }
 }
