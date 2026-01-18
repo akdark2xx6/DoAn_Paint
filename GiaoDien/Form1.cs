@@ -1,10 +1,11 @@
-using GiaoDien.Tool;
-using Microsoft.VisualBasic.Devices;
 using System.ComponentModel;  
 using System.Drawing;        
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging.Effects;
 using System.Windows.Forms;
+using GiaoDien.Tool;
+using Microsoft.VisualBasic.Devices;
+using System.Text.RegularExpressions;
 
 namespace GiaoDien
 {
@@ -65,6 +66,8 @@ namespace GiaoDien
         private Rectangle rt;
         public Rectangle rt_data { get => rt; }
 
+        private bool isDirty = false; // true nếu có thay đổi chưa được lưu
+
         public MainWindow()
         {
             InitializeComponent();
@@ -81,6 +84,19 @@ namespace GiaoDien
             using_ = new Pencil(this);
             rt = new Rectangle(70, 27, 826, 440);
 
+            // Đăng ký sự kiện đóng cửa sổ để hỏi lưu nếu cần
+            this.FormClosing -= MainWindow_FormClosing;
+            this.FormClosing += MainWindow_FormClosing;
+
+            // Đặt tiêu đề cửa sổ cho các tài liệu "Untitled"
+            if (string.IsNullOrEmpty(currentFilePath))
+            {
+                this.Text = GetNextUntitledTitle();
+            }
+            else
+            {
+                this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+            }
         }
 
         private void picking(Button pick) // Hightlight button đang sử dụng
@@ -112,6 +128,9 @@ namespace GiaoDien
 
             // Khi vẽ nét mới thì redoStack phải bị xóa sạch (logic chuẩn của Undo)
             redoStack.Clear();
+
+            // Đánh dấu có thay đổi chưa được lưu
+            isDirty = true;
         }
 
         private void shapeButton_Click(object sender, EventArgs e)
@@ -282,27 +301,63 @@ namespace GiaoDien
             else
                 toolStripStatusLabel1.Text = (e.Location.X - 70).ToString() + ", " + (e.Location.Y - 27).ToString();
             SetCursor(e.Location);
+
+            const int MIN_SIZE = 1;
+
             if (e.Button == MouseButtons.Left && isResize == true)
             {
-
+                // dx, dy là delta so với firstPoint lưu trước đó (không gán firstPoint = e.Location ngay lập tức)
                 int dx = e.X - firstPoint.X;
                 int dy = e.Y - firstPoint.Y;
-                firstPoint = e.Location;
+
+                int oldWidth = rt.Width;
+                int oldHeight = rt.Height;
+
                 switch ((ResizeHandle)activeHandle)
                 {
                     case ResizeHandle.MiddleRight:
-                        rt.Width += dx;
+                        {
+                            int desiredW = oldWidth + dx;
+                            int newW = Math.Max(desiredW, MIN_SIZE);
+                            rt.Width = newW;
+
+                            // consumedX là phần đã thực sự áp dụng cho kích thước
+                            int consumedX = newW - oldWidth;
+                            // cập nhật firstPoint để lần tính delta tiếp theo chỉ lấy phần chưa được áp dụng
+                            firstPoint.X += consumedX;
+                        }
                         break;
 
                     case ResizeHandle.BottomCenter:
-                        rt.Height += dy;
+                        {
+                            int desiredH = oldHeight + dy;
+                            int newH = Math.Max(desiredH, MIN_SIZE);
+                            rt.Height = newH;
+
+                            int consumedY = newH - oldHeight;
+                            firstPoint.Y += consumedY;
+                        }
                         break;
+
                     case ResizeHandle.BottomRight:
-                        rt.Width += dx; rt.Height += dy;
+                        {
+                            int desiredW = oldWidth + dx;
+                            int desiredH = oldHeight + dy;
+                            int newW = Math.Max(desiredW, MIN_SIZE);
+                            int newH = Math.Max(desiredH, MIN_SIZE);
+
+                            rt.Width = newW;
+                            rt.Height = newH;
+
+                            int consumedX = newW - oldWidth;
+                            int consumedY = newH - oldHeight;
+                            firstPoint.X += consumedX;
+                            firstPoint.Y += consumedY;
+                        }
                         break;
                 }
-                Invalidate();
 
+                Invalidate();
             }
             else
                 using_.MouseMove(sender, e);
@@ -397,27 +452,31 @@ namespace GiaoDien
 
                 if (sfd.ShowDialog() == DialogResult.OK && sfd.FileName != "")
                 {
-                    // Cập nhật đường dẫn file hiện tại
-                    currentFilePath = sfd.FileName;
-
-                    // Cập nhật tiêu đề cửa sổ (Ví dụ: Paint - MyPicture.png)
-                    this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
-
                     // Thực hiện lưu
-                    SaveImage(currentFilePath, sfd.FilterIndex);
+                    bool ok = SaveImage(sfd.FileName, sfd.FilterIndex);
+                    if (ok)
+                    {
+                        // Cập nhật đường dẫn file hiện tại
+                        currentFilePath = sfd.FileName;
+
+                        // Cập nhật tiêu đề cửa sổ (Ví dụ: Paint - MyPicture.png)
+                        this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+                    }
                 }
             }
             // Trường hợp 2: Đã có file -> Lưu đè luôn không hỏi
             else
             {
-                // Mặc định lưu theo đuôi file cũ (đơn giản hóa là lưu PNG hoặc check đuôi)
-                // Để an toàn, ta cứ gọi hàm lưu mặc định
-                SaveImage(currentFilePath, 1); // 1 là PNG
+                bool ok = SaveImage(currentFilePath, 1); // 1 là PNG (hàm tự chọn theo đuôi)
+                if (!ok)
+                {
+                    // Nếu lưu thất bại, có thể báo hoặc giữ nguyên isDirty = true
+                }
             }
         }
 
         // Hàm phụ trợ để lưu file cho gọn code
-        private void SaveImage(string path, int formatIndex)
+        private bool SaveImage(string path, int formatIndex)
         {
             try
             {
@@ -427,14 +486,16 @@ namespace GiaoDien
                 if (path.EndsWith(".jpg") || path.EndsWith(".jpeg")) format = System.Drawing.Imaging.ImageFormat.Jpeg;
                 else if (path.EndsWith(".bmp")) format = System.Drawing.Imaging.ImageFormat.Bmp;
 
-                // Nếu đang dùng công cụ (ví dụ đang kéo vùng chọn), cần chốt hình xuống nền trước khi lưu
-                // (Tùy chọn: bạn có thể thêm using_.Finish() nếu muốn)
-
                 drawZone.Save(path, format);
+
+                // Nếu lưu thành công, đánh dấu không còn thay đổi
+                isDirty = false;
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi lưu file: " + ex.Message);
+                return false;
             }
         }
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,6 +556,189 @@ namespace GiaoDien
             unpickingAll();
             picking(TextButton);
             using_ = new Text(this);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn ảnh để mở trong ứng dụng";
+                ofd.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif|All files|*.*";
+                ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string path = ofd.FileName;
+                try
+                {
+
+                    // Tải ảnh từ file, sao chép vào Bitmap mới (để file không bị khóa)
+                    using (Image img = Image.FromFile(path))
+                    {
+                        Bitmap newBitmap = new Bitmap(img);
+
+                        // Giải phóng resources hiện tại trước khi thay thế
+                        if (g != null)
+                        {
+                            g.Dispose();
+                            g = null;
+                        }
+                        if (drawZone != null)
+                        {
+                            drawZone.Dispose();
+                            drawZone = null;
+                        }
+
+                        // Gán drawZone mới và tạo Graphics cho nó
+                        drawZone = newBitmap;
+                        g = Graphics.FromImage(drawZone);
+
+                        // Thay đổi kích thước vùng vẽ (rt) để khớp với kích thước ảnh thực
+                        rt = new Rectangle(rt.X, rt.Y, drawZone.Width, drawZone.Height);
+
+                        // Cập nhật đường dẫn hiện tại và tiêu đề cửa sổ
+                        currentFilePath = path;
+                        this.Text = "Paint - " + System.IO.Path.GetFileName(path);
+
+                        // VÌ vừa mở từ file => không có thay đổi chưa lưu
+                        isDirty = false;
+                    }
+
+                    // Vẽ lại giao diện để hiển thị ảnh mới
+                    Invalidate();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private string GetNextUntitledTitle()
+        {
+            var used = new HashSet<int>();
+            var regex = new Regex(@"^Paint - Untitled(\d*)$");
+
+            foreach (Form f in Application.OpenForms)
+            {
+                // Nếu form chưa hiển thị (constructor gọi trước Show) thì nó chưa ở trong OpenForms,
+                // nên vòng này chỉ duyệt các cửa sổ đang mở hiện tại.
+                var text = f.Text ?? string.Empty;
+                var m = regex.Match(text);
+                if (m.Success)
+                {
+                    var numPart = m.Groups[1].Value;
+                    int n = 0;
+                    if (!string.IsNullOrEmpty(numPart))
+                    {
+                        if (!int.TryParse(numPart, out n))
+                            continue;
+                    }
+                    used.Add(n);
+                }
+            }
+
+            int i = 0;
+            while (used.Contains(i)) i++;
+
+            return i == 0 ? "Paint - Untitled" : $"Paint - Untitled{i}";
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isDirty)
+                return; // Không có thay đổi => đóng ngay
+
+            string name = string.IsNullOrEmpty(currentFilePath) ? this.Text : System.IO.Path.GetFileName(currentFilePath);
+            var result = MessageBox.Show($"Bạn có muốn lưu thay đổi cho {name}?", "Lưu thay đổi", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+                return;
+            }
+            if (result == DialogResult.No)
+            {
+                // Người dùng không muốn lưu, cho đóng
+                return;
+            }
+
+            // Người dùng chọn Yes -> lưu
+            if (string.IsNullOrEmpty(currentFilePath))
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
+                sfd.Title = "Lưu ảnh";
+
+                if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
+                {
+                    // Người dùng huỷ chọn nơi lưu => huỷ đóng
+                    e.Cancel = true;
+                    return;
+                }
+
+                bool ok = SaveImage(sfd.FileName, 1);
+                if (ok)
+                {
+                    currentFilePath = sfd.FileName;
+                    this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+                }
+                else
+                {
+                    // Lưu thất bại => huỷ đóng
+                    e.Cancel = true;
+                    return;
+                }
+            }
+            else
+            {
+                bool ok = SaveImage(currentFilePath, 1);
+                if (!ok)
+                {
+                    // Lưu thất bại => huỷ đóng
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "Save As";
+                sfd.Filter = "PNG Image|*.png|JPEG Image|*.jpg;*.jpeg|Bitmap Image|*.bmp";
+                sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                if (!string.IsNullOrEmpty(currentFilePath))
+                    sfd.FileName = System.IO.Path.GetFileName(currentFilePath);
+
+                if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
+                    return;
+
+                try
+                {
+                    string path = sfd.FileName;
+                    System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
+                    if (path.EndsWith(".jpg", System.StringComparison.OrdinalIgnoreCase) ||
+                        path.EndsWith(".jpeg", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                    }
+                    else if (path.EndsWith(".bmp", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        format = System.Drawing.Imaging.ImageFormat.Bmp;
+                    }
+
+                    // Lưu 1 bản sao mà không thay đổi currentFilePath, this.Text hay isDirty
+                    drawZone.Save(path, format);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi lưu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

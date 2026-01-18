@@ -221,6 +221,7 @@ namespace GiaoDien
             activeHandle = (int)ResizeHandle.None;
             owner.Cursor = Cursors.Default;
             owner.Invalidate();
+
         }
 
         public override void OnPaint_(PaintEventArgs e)
