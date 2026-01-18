@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {}
+    "C:\\Users\\Hi\\source\\repos\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {
+    "C:\\Users\\Hi\\source\\repos\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
+        "projectUniqueName": "C:\\Users\\Hi\\source\\repos\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
         "projectName": "GiaoDien",
-        "projectPath": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ADMIN\\Desktop\\DoAn_Paint\\GiaoDien\\obj\\",
+        "projectPath": "C:\\Users\\Hi\\source\\repos\\DoAn_Paint\\GiaoDien\\GiaoDien.csproj",
+        "packagesPath": "C:\\Users\\Hi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Hi\\source\\repos\\DoAn_Paint\\GiaoDien\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

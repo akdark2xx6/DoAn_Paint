@@ -39,7 +39,29 @@ namespace GiaoDien
         {
             selectionRect = new Rectangle();
         }
+        public void PasteImage(Bitmap pastedImg)
+        {
+            // 1. Gán ảnh từ Clipboard vào biến "ảnh đang chọn"
+            this.isChoosingBitmap = pastedImg;
 
+            // 2. Tạo vùng chọn ở góc trái trên (0,0) có kích thước bằng ảnh
+            this.selectionRect = new Rectangle(0, 0, pastedImg.Width, pastedImg.Height);
+
+            // 3. Chụp lại màn hình hiện tại làm nền 
+            // (Để lát nữa bạn di chuyển ảnh, nền bên dưới vẫn còn nguyên)
+            this.clone_currentBitmap = (Bitmap)owner.drawZone.Clone();
+
+            // 4. QUAN TRỌNG: Đặt vùng trắng (whiteRect) là Rỗng
+            // Vì đây là ảnh dán đè lên, không phải cắt từ nền ra, nên không được đục lỗ nền
+            this.whiteRect = Rectangle.Empty;
+
+            // 5. Bật trạng thái đang chọn để vẽ ra màn hình
+            // (Giả sử bạn dùng cờ isSelecting hoặc kiểm tra null trong OnPaint)
+            // Nếu code vẽ của bạn dựa vào isChoosingBitmap != null thì ok.
+
+            // 6. Cập nhật lại màn hình
+            owner.Invalidate();
+        }
         public override void MouseDown(object sender, MouseEventArgs e)
         {
             if (owner.drawZone_data == null) return;
@@ -356,25 +378,7 @@ namespace GiaoDien
                 owner.Invalidate();
             }
         }
-        public void PasteImage(Bitmap pastedImg)
-        {
-            // 1. Gán ảnh từ Clipboard vào biến ảnh đang chọn
-            isChoosingBitmap = pastedImg;
-
-            // 2. Thiết lập vùng chọn nằm ở góc trái trên (0,0) với kích thước bằng ảnh
-            selectionRect = new Rectangle(0, 0, pastedImg.Width, pastedImg.Height);
-
-            // 3. Chụp lại màn hình hiện tại làm nền (Background)
-            // Lưu ý: Lúc này chưa cắt gì cả nên nền vẫn nguyên vẹn
-            clone_currentBitmap = (Bitmap)owner.drawZone_data.Clone();
-
-            // 4. Đặt vùng trắng (vùng cắt) là Rỗng
-            // (Vì đây là ảnh dán vào, không phải cắt từ nền ra nên không để lại lỗ trắng)
-            whiteRect = Rectangle.Empty;
-
-            // 5. Vẽ lại để hiển thị ảnh và khung chọn
-            owner.Invalidate();
-        }
+        
         public override void key_Keydown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
