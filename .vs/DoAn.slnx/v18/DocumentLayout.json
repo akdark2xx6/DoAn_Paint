@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\hi\\source\\repos\\doan_paint\\giaodien\\tool\\select.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\tool\\select.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\hi\\source\\repos\\doan_paint\\giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|c:\\users\\hi\\source\\repos\\doan_paint\\giaodien\\tool\\select.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|solutionrelative:giaodien\\tool\\select.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{51E5B4A2-659B-88F2-485D-F68B8EFBAABC}|GiaoDien\\GiaoDien.csproj|C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\giaodien\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
@@ -43,7 +43,8 @@
               "ViewState": "AgIAAAMCAAAAAAAAAAAmwBICAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-18T11:07:41.122Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -75,26 +76,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Select.cs",
               "DocumentMoniker": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\GiaoDien\\Tool\\Select.cs",
               "RelativeDocumentMoniker": "GiaoDien\\Tool\\Select.cs",
               "ToolTip": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\GiaoDien\\Tool\\Select.cs",
               "RelativeToolTip": "GiaoDien\\Tool\\Select.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAADwvzIAAABKAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAADwvzIAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-18T11:13:03.965Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\GiaoDien\\Form1.cs",
               "RelativeDocumentMoniker": "GiaoDien\\Form1.cs",
               "ToolTip": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\GiaoDien\\Form1.cs",
               "RelativeToolTip": "GiaoDien\\Form1.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAqwBAAAABRAAAAAAAAAA==",
+              "ViewState": "AgIAAMECAAAAAAAAAAAuwMwCAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-18T11:08:12.851Z",
               "EditorCaption": ""
@@ -108,7 +109,8 @@
               "ToolTip": "C:\\Users\\Hi\\Source\\Repos\\DoAn_Paint\\GiaoDien\\Form1.cs [Design]",
               "RelativeToolTip": "GiaoDien\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T11:07:43.356Z"
+              "WhenOpened": "2026-01-18T11:07:43.356Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

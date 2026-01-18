@@ -1,10 +1,11 @@
-using GiaoDien.Tool;
-using Microsoft.VisualBasic.Devices;
-using System.ComponentModel;  
-using System.Drawing;        
+using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging.Effects;
 using System.Windows.Forms;
+using GiaoDien.Tool;
+using Microsoft.VisualBasic.Devices;
+using System.Text.RegularExpressions;
 
 namespace GiaoDien
 {
@@ -63,6 +64,8 @@ namespace GiaoDien
         private Rectangle rt;
         public Rectangle rt_data { get => rt; }
 
+        private bool isDirty = false; // true nếu có thay đổi chưa được lưu
+
         public MainWindow()
         {
             InitializeComponent();
@@ -83,9 +86,8 @@ namespace GiaoDien
             using_ = new Pencil(this);
             rt = new Rectangle(70, 27, 826, 440);
 
-            // --- THÊM ĐOẠN NÀY ĐỂ TẠO MENU CHUỘT PHẢI ---
+            // --- PHẦN 1: TẠO MENU CHUỘT PHẢI (Code của bạn) ---
             ContextMenuStrip ctxMenu = new ContextMenuStrip();
-
             ToolStripMenuItem copyItem = new ToolStripMenuItem("Copy", null, copyToolStripMenuItem_Click);
             ToolStripMenuItem cutItem = new ToolStripMenuItem("Cut", null, cutToolStripMenuItem_Click);
             ToolStripMenuItem pasteItem = new ToolStripMenuItem("Paste", null, pasteToolStripMenuItem_Click);
@@ -98,9 +100,25 @@ namespace GiaoDien
             ctxMenu.Items.Add(copyItem);
             ctxMenu.Items.Add(pasteItem);
 
-            // Gán menu cho Form (Vì bạn vẽ trực tiếp lên Form)
+            // Gán menu cho Form
             this.ContextMenuStrip = ctxMenu;
+
+            // --- PHẦN 2: LOGIC QUẢN LÝ FILE & ĐÓNG FORM (Code từ Server) ---
+            // Đăng ký sự kiện đóng cửa sổ để hỏi lưu nếu cần
+            this.FormClosing -= MainWindow_FormClosing;
+            this.FormClosing += MainWindow_FormClosing;
+
+            // Đặt tiêu đề cửa sổ cho các tài liệu "Untitled"
+            if (string.IsNullOrEmpty(currentFilePath))
+            {
+                this.Text = GetNextUntitledTitle();
+            }
+            else
+            {
+                this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+            }
         }
+
         private void picking(Button pick) // Hightlight button đang sử dụng
         {
             pick.BackColor = SystemColors.ActiveCaption;
@@ -125,11 +143,13 @@ namespace GiaoDien
         public void SaveHistory()
         {
             // Lưu bản sao của drawZone vào undoStack
-            // Lưu ý: Phải dùng Clone() để tạo bản sao, nếu không nó sẽ lưu tham chiếu
             undoStack.Push((Bitmap)drawZone.Clone());
 
-            // Khi vẽ nét mới thì redoStack phải bị xóa sạch (logic chuẩn của Undo)
+            // Khi vẽ nét mới thì redoStack phải bị xóa sạch
             redoStack.Clear();
+
+            // Đánh dấu có thay đổi chưa được lưu
+            isDirty = true;
         }
 
         private void shapeButton_Click(object sender, EventArgs e)
@@ -193,8 +213,6 @@ namespace GiaoDien
             picking(fillButton);
             using_ = new FillColor(this);
         }
-
-
 
         private void polygonButton_Click(object sender, EventArgs e)
         {
@@ -300,27 +318,60 @@ namespace GiaoDien
             else
                 toolStripStatusLabel1.Text = (e.Location.X - 70).ToString() + ", " + (e.Location.Y - 27).ToString();
             SetCursor(e.Location);
+
+            const int MIN_SIZE = 1;
+
             if (e.Button == MouseButtons.Left && isResize == true)
             {
-
                 int dx = e.X - firstPoint.X;
                 int dy = e.Y - firstPoint.Y;
-                firstPoint = e.Location;
+
+                int oldWidth = rt.Width;
+                int oldHeight = rt.Height;
+
                 switch ((ResizeHandle)activeHandle)
                 {
                     case ResizeHandle.MiddleRight:
-                        rt.Width += dx;
+                        {
+                            int desiredW = oldWidth + dx;
+                            int newW = Math.Max(desiredW, MIN_SIZE);
+                            rt.Width = newW;
+
+                            int consumedX = newW - oldWidth;
+                            firstPoint.X += consumedX;
+                        }
                         break;
 
                     case ResizeHandle.BottomCenter:
-                        rt.Height += dy;
+                        {
+                            int desiredH = oldHeight + dy;
+                            int newH = Math.Max(desiredH, MIN_SIZE);
+                            rt.Height = newH;
+
+                            int consumedY = newH - oldHeight;
+                            firstPoint.Y += consumedY;
+                        }
                         break;
+
                     case ResizeHandle.BottomRight:
-                        rt.Width += dx; rt.Height += dy;
+                        {
+                            int desiredW = oldWidth + dx;
+                            int desiredH = oldHeight + dy;
+                            int newW = Math.Max(desiredW, MIN_SIZE);
+                            int newH = Math.Max(desiredH, MIN_SIZE);
+
+                            rt.Width = newW;
+                            rt.Height = newH;
+
+                            int consumedX = newW - oldWidth;
+                            int consumedY = newH - oldHeight;
+                            firstPoint.X += consumedX;
+                            firstPoint.Y += consumedY;
+                        }
                         break;
                 }
-                Invalidate();
 
+                Invalidate();
             }
             else
                 using_.MouseMove(sender, e);
@@ -335,8 +386,7 @@ namespace GiaoDien
             {
                 SaveHistory(); // Lưu Undo
 
-                // Kiểm tra logic Resize khung hình (Code gốc của bạn)
-                // Lưu ý: Select ở đây là cái nút Button màu xám
+                // Kiểm tra logic Resize khung hình
                 if (GetActiveHandle(e.Location) != (int)ResizeHandle.None && Select.BackColor == SystemColors.ControlLight)
                 {
                     isResize = true;
@@ -388,27 +438,15 @@ namespace GiaoDien
         {
             if (Clipboard.ContainsImage())
             {
-                // 1. Lấy ảnh từ Clipboard
                 Image img = Clipboard.GetImage();
                 Bitmap bmp = new Bitmap(img);
 
-                // 2. Chuyển ngay sang công cụ Select (quan trọng)
-                // Reset công cụ cũ
                 using_ = null;
-
-                // Tạo công cụ Select mới
                 Select selectTool = new Select(this);
                 using_ = selectTool;
 
-                // 3. Lưu Undo trước khi dán (để nếu dán nhầm còn undo được)
                 SaveHistory();
-
-                // 4. Gọi hàm PasteImage vừa viết bên Select.cs
-                // Ảnh sẽ hiện lên ở dạng "được chọn" để bạn kéo đi chỗ khác
                 selectTool.PasteImage(bmp);
-
-                // (Tùy chọn) Highlight nút Select trên giao diện nếu bạn muốn
-                // picking(selectBtn); 
             }
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -422,50 +460,28 @@ namespace GiaoDien
 
                 if (sfd.ShowDialog() == DialogResult.OK && sfd.FileName != "")
                 {
-                    // Cập nhật đường dẫn file vào biến nhớ
-                    currentFilePath = sfd.FileName;
-
-                    // Cập nhật tiêu đề cửa sổ (VD: Paint - HinhAnh.png)
-                    this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
-
-                    // Thực hiện lưu
-                    SaveImageToDisk(currentFilePath, sfd.FilterIndex);
+                    // Thực hiện lưu (Dùng hàm SaveImage mới của server để kiểm tra lỗi)
+                    bool ok = SaveImage(sfd.FileName, sfd.FilterIndex);
+                    if (ok)
+                    {
+                        currentFilePath = sfd.FileName;
+                        this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+                    }
                 }
             }
             // TRƯỜNG HỢP 2: Đã có file rồi -> Lưu đè luôn (Quick Save)
             else
             {
-                // Lưu đè vào đường dẫn cũ (mặc định dùng định dạng PNG hoặc tự check)
-                SaveImageToDisk(currentFilePath, 1);
-            }
-        }
-
-        // Hàm phụ trợ để code gọn hơn
-        private void SaveImageToDisk(string path, int filterIndex)
-        {
-            try
-            {
-                System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
-
-                // Kiểm tra đuôi file để chọn định dạng đúng
-                string ext = System.IO.Path.GetExtension(path).ToLower();
-                if (ext == ".jpg" || ext == ".jpeg") format = System.Drawing.Imaging.ImageFormat.Jpeg;
-                else if (ext == ".bmp") format = System.Drawing.Imaging.ImageFormat.Bmp;
-
-                // Nếu lưu lần đầu qua Dialog thì ưu tiên Filter người dùng chọn
-                else if (filterIndex == 2) format = System.Drawing.Imaging.ImageFormat.Jpeg;
-                else if (filterIndex == 3) format = System.Drawing.Imaging.ImageFormat.Bmp;
-
-                drawZone.Save(path, format);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi lưu file: " + ex.Message);
+                bool ok = SaveImage(currentFilePath, 1); // 1 là PNG (hàm tự chọn theo đuôi)
+                if (!ok)
+                {
+                    // Nếu lưu thất bại, có thể báo hoặc giữ nguyên isDirty = true
+                }
             }
         }
 
         // Hàm phụ trợ để lưu file cho gọn code
-        private void SaveImage(string path, int formatIndex)
+        private bool SaveImage(string path, int formatIndex)
         {
             try
             {
@@ -475,29 +491,25 @@ namespace GiaoDien
                 if (path.EndsWith(".jpg") || path.EndsWith(".jpeg")) format = System.Drawing.Imaging.ImageFormat.Jpeg;
                 else if (path.EndsWith(".bmp")) format = System.Drawing.Imaging.ImageFormat.Bmp;
 
-                // Nếu đang dùng công cụ (ví dụ đang kéo vùng chọn), cần chốt hình xuống nền trước khi lưu
-                // (Tùy chọn: bạn có thể thêm using_.Finish() nếu muốn)
-
                 drawZone.Save(path, format);
+
+                // Nếu lưu thành công, đánh dấu không còn thay đổi
+                isDirty = false;
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi lưu file: " + ex.Message);
+                return false;
             }
         }
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (undoStack.Count > 0)
             {
-                // 1. Đẩy hiện tại sang Redo
                 redoStack.Push((Bitmap)drawZone.Clone());
-
-                // 2. Lấy cái cũ từ Undo ra
                 Bitmap old = undoStack.Pop();
-
-                // 3. Gán lại vào drawZone
                 drawZone = (Bitmap)old.Clone();
-                // 4. Dọn dẹp RAM (Quan trọng với ảnh bitmap)
                 old.Dispose();
                 Invalidate();
             }
@@ -507,13 +519,8 @@ namespace GiaoDien
         {
             if (redoStack.Count > 0)
             {
-                // 1. Đẩy hiện tại sang Undo
                 undoStack.Push((Bitmap)drawZone.Clone());
-
-                // 2. Lấy từ Redo ra
                 Bitmap future = redoStack.Pop();
-
-                // 3. Gán lại
                 drawZone = (Bitmap)future.Clone();
                 future.Dispose();
                 Invalidate();
@@ -545,6 +552,170 @@ namespace GiaoDien
             using_ = new GiaoDien.Text(this);
         }
 
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn ảnh để mở trong ứng dụng";
+                ofd.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif|All files|*.*";
+                ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string path = ofd.FileName;
+                try
+                {
+                    // Tải ảnh từ file, sao chép vào Bitmap mới (để file không bị khóa)
+                    using (Image img = Image.FromFile(path))
+                    {
+                        Bitmap newBitmap = new Bitmap(img);
+
+                        if (g != null)
+                        {
+                            g.Dispose();
+                            g = null;
+                        }
+                        if (drawZone != null)
+                        {
+                            drawZone.Dispose();
+                            drawZone = null;
+                        }
+
+                        drawZone = newBitmap;
+                        g = Graphics.FromImage(drawZone);
+
+                        rt = new Rectangle(rt.X, rt.Y, drawZone.Width, drawZone.Height);
+                        currentFilePath = path;
+                        this.Text = "Paint - " + System.IO.Path.GetFileName(path);
+                        isDirty = false;
+                    }
+                    Invalidate();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private string GetNextUntitledTitle()
+        {
+            var used = new HashSet<int>();
+            var regex = new Regex(@"^Paint - Untitled(\d*)$");
+
+            foreach (Form f in Application.OpenForms)
+            {
+                var text = f.Text ?? string.Empty;
+                var m = regex.Match(text);
+                if (m.Success)
+                {
+                    var numPart = m.Groups[1].Value;
+                    int n = 0;
+                    if (!string.IsNullOrEmpty(numPart))
+                    {
+                        if (!int.TryParse(numPart, out n))
+                            continue;
+                    }
+                    used.Add(n);
+                }
+            }
+
+            int i = 0;
+            while (used.Contains(i)) i++;
+
+            return i == 0 ? "Paint - Untitled" : $"Paint - Untitled{i}";
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isDirty)
+                return; // Không có thay đổi => đóng ngay
+
+            string name = string.IsNullOrEmpty(currentFilePath) ? this.Text : System.IO.Path.GetFileName(currentFilePath);
+            var result = MessageBox.Show($"Bạn có muốn lưu thay đổi cho {name}?", "Lưu thay đổi", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+                return;
+            }
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
+            // Người dùng chọn Yes -> lưu
+            if (string.IsNullOrEmpty(currentFilePath))
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
+                sfd.Title = "Lưu ảnh";
+
+                if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                bool ok = SaveImage(sfd.FileName, 1);
+                if (ok)
+                {
+                    currentFilePath = sfd.FileName;
+                    this.Text = "Paint - " + System.IO.Path.GetFileName(currentFilePath);
+                }
+                else
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+            else
+            {
+                bool ok = SaveImage(currentFilePath, 1);
+                if (!ok)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "Save As";
+                sfd.Filter = "PNG Image|*.png|JPEG Image|*.jpg;*.jpeg|Bitmap Image|*.bmp";
+                sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                if (!string.IsNullOrEmpty(currentFilePath))
+                    sfd.FileName = System.IO.Path.GetFileName(currentFilePath);
+
+                if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
+                    return;
+
+                try
+                {
+                    string path = sfd.FileName;
+                    System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
+                    if (path.EndsWith(".jpg", System.StringComparison.OrdinalIgnoreCase) ||
+                        path.EndsWith(".jpeg", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                    }
+                    else if (path.EndsWith(".bmp", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        format = System.Drawing.Imaging.ImageFormat.Bmp;
+                    }
+
+                    drawZone.Save(path, format);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi lưu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }
