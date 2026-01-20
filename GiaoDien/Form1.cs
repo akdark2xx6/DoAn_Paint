@@ -50,6 +50,11 @@ namespace GiaoDien
             BottomRight = 2,
         }
 
+        // Context menu fields (khởi tạo trong ctor nhưng không gán this.ContextMenuStrip)
+        private ContextMenuStrip ctxMenu;
+        private ToolStripMenuItem copyItem;
+        private ToolStripMenuItem cutItem;
+        private ToolStripMenuItem pasteItem;
 
         public void CutCopy_Unenable()
         {
@@ -87,11 +92,11 @@ namespace GiaoDien
             using_ = new Pencil(this);
             rt = new Rectangle(70, 27, 826, 440);
 
-            // --- PHẦN 1: TẠO MENU CHUỘT PHẢI (Code của bạn) ---
-            ContextMenuStrip ctxMenu = new ContextMenuStrip();
-            ToolStripMenuItem copyItem = new ToolStripMenuItem("Copy", null, copyToolStripMenuItem_Click);
-            ToolStripMenuItem cutItem = new ToolStripMenuItem("Cut", null, cutToolStripMenuItem_Click);
-            ToolStripMenuItem pasteItem = new ToolStripMenuItem("Paste", null, pasteToolStripMenuItem_Click);
+            // --- TẠO MENU CHUỘT PHẢI NHƯNG KHÔNG GÁN this.ContextMenuStrip ---
+            ctxMenu = new ContextMenuStrip();
+            cutItem = new ToolStripMenuItem("Cut", null, cutToolStripMenuItem_Click);
+            copyItem = new ToolStripMenuItem("Copy", null, copyToolStripMenuItem_Click);
+            pasteItem = new ToolStripMenuItem("Paste", null, pasteToolStripMenuItem_Click);
 
             copyItem.ShortcutKeyDisplayString = "Ctrl+C";
             cutItem.ShortcutKeyDisplayString = "Ctrl+X";
@@ -101,8 +106,7 @@ namespace GiaoDien
             ctxMenu.Items.Add(copyItem);
             ctxMenu.Items.Add(pasteItem);
 
-            // Gán menu cho Form
-            this.ContextMenuStrip = ctxMenu;
+            // LƯU Ý: không gán this.ContextMenuStrip = ctxMenu; để menu không xuất hiện mặc định ở mọi vị trí
 
             // --- PHẦN 2: LOGIC QUẢN LÝ FILE & ĐÓNG FORM (Code từ Server) ---
             // Đăng ký sự kiện đóng cửa sổ để hỏi lưu nếu cần
@@ -413,6 +417,33 @@ namespace GiaoDien
         }
         private void MainWindow_MouseUp(object sender, MouseEventArgs e)
         {
+            // Xử lý click phải: chỉ show menu khi click vào vùng chọn
+            if (e.Button == MouseButtons.Right)
+            {
+                bool shouldShow = false;
+                bool hasSelection = false;
+
+                if (using_ is Select sel)
+                {
+                    hasSelection = sel.HasSelection;
+                    if (sel.IsPointInsideSelection(e.Location))
+                        shouldShow = true;
+                }
+
+                // cập nhật trạng thái các menu item trước khi hiện
+                cutItem.Enabled = copyItem.Enabled = hasSelection;
+                pasteItem.Enabled = Clipboard.ContainsImage();
+
+                if (shouldShow)
+                {
+                    // Hiện menu tại vị trí chuột (relative to form)
+                    ctxMenu.Show(this, e.Location);
+                }
+
+                // Không tiếp tục xử lý cho click phải
+                return;
+            }
+
             if (isResize == true)
             {
                 isResize = false;
@@ -429,7 +460,6 @@ namespace GiaoDien
                 return;
             }
             else using_.MouseUp(sender, e);
-
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -517,10 +547,20 @@ namespace GiaoDien
         {
             if (undoStack.Count > 0)
             {
+                // Push current state to redo
                 redoStack.Push((Bitmap)drawZone.Clone());
+
+                // Pop previous state and set drawZone
                 Bitmap old = undoStack.Pop();
+
+                // Dispose current drawZone to avoid leaking and to avoid stale references
+                try { drawZone?.Dispose(); } catch { }
                 drawZone = (Bitmap)old.Clone();
                 old.Dispose();
+
+                // If current tool holds transient bitmaps (Select), cancel its edit so it won't later overwrite drawZone
+                try { using_?.CancelEdit(); } catch { }
+
                 Invalidate();
             }
         }
@@ -529,10 +569,18 @@ namespace GiaoDien
         {
             if (redoStack.Count > 0)
             {
+                // Push current state to undo
                 undoStack.Push((Bitmap)drawZone.Clone());
+
                 Bitmap future = redoStack.Pop();
+
+                try { drawZone?.Dispose(); } catch { }
                 drawZone = (Bitmap)future.Clone();
                 future.Dispose();
+
+                // Cancel transient edits in current tool so no stale clones overwrite drawZone
+                try { using_?.CancelEdit(); } catch { }
+
                 Invalidate();
             }
         }
