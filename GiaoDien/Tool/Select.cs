@@ -39,29 +39,7 @@ namespace GiaoDien
         {
             selectionRect = new Rectangle();
         }
-        public void PasteImage(Bitmap pastedImg)
-        {
-            // 1. Gán ảnh từ Clipboard vào biến "ảnh đang chọn"
-            this.isChoosingBitmap = pastedImg;
 
-            // 2. Tạo vùng chọn ở góc trái trên (0,0) có kích thước bằng ảnh
-            this.selectionRect = new Rectangle(0, 0, pastedImg.Width, pastedImg.Height);
-
-            // 3. Chụp lại màn hình hiện tại làm nền 
-            // (Để lát nữa bạn di chuyển ảnh, nền bên dưới vẫn còn nguyên)
-            this.clone_currentBitmap = (Bitmap)owner.drawZone.Clone();
-
-            // 4. QUAN TRỌNG: Đặt vùng trắng (whiteRect) là Rỗng
-            // Vì đây là ảnh dán đè lên, không phải cắt từ nền ra, nên không được đục lỗ nền
-            this.whiteRect = Rectangle.Empty;
-
-            // 5. Bật trạng thái đang chọn để vẽ ra màn hình
-            // (Giả sử bạn dùng cờ isSelecting hoặc kiểm tra null trong OnPaint)
-            // Nếu code vẽ của bạn dựa vào isChoosingBitmap != null thì ok.
-
-            // 6. Cập nhật lại màn hình
-            owner.Invalidate();
-        }
         public override void MouseDown(object sender, MouseEventArgs e)
         {
             if (owner.drawZone_data == null) return;
@@ -71,7 +49,22 @@ namespace GiaoDien
 
             activeHandle = GetActiveHandle(e.Location);
 
-            // Nếu click vào handle (resize) — chuẩn bị kéo handle
+            // If there is an existing selection and user clicks outside it -> cancel selection and restore default cursor.
+            if (selectionRect.Width > 0 && selectionRect.Height > 0 && !selectionRect.Contains(mouse))
+            {
+                // Dispose/dereference floating bitmaps to avoid memory leaks
+                try { isChoosingBitmap?.Dispose(); } catch { }
+                isChoosingBitmap = null;
+                try { clone_current_bitmap_safe_dispose(); } catch { }
+                whiteRect = Rectangle.Empty;
+                selectionRect = Rectangle.Empty;
+                activeHandle = (int)ResizeHandle.None;
+                isSelecting = false;
+                owner.Cursor = Cursors.Default;
+                owner.Invalidate();
+                return;
+            }
+
             if (activeHandle != (int)ResizeHandle.None)
             {
                 firstPoint = mouse;
@@ -79,8 +72,7 @@ namespace GiaoDien
                 return;
             }
 
-            // Nếu click vào vùng chọn hiện tại và có ảnh đang "nổi", cho phép di chuyển
-            if (selectionRect.Contains(mouse) && isChoosingBitmap != null)
+            if (selectionRect.Contains(mouse))
             {
                 activeHandle = (int)ResizeHandle.Move;
                 firstPoint = mouse;
@@ -88,20 +80,23 @@ namespace GiaoDien
                 return;
             }
 
-            // Bắt đầu một selection mới: loại bỏ selection "nổi" cũ
-            isChoosingBitmap = null;
-            selectionRect = Rectangle.Empty;
-            activeHandle = (int)ResizeHandle.None;
-            whiteRect = Rectangle.Empty;            
-            // Lưu snapshot nền hiện tại để thao tác tiếp theo không ghi chồng ảnh cũ
-            clone_currentBitmap = (Bitmap)owner.drawZone_data.Clone();
-            whiteRect = Rectangle.Empty;
-
             firstPoint = mouse;
             isSelecting = true;
             selectionRect = new Rectangle(mouse.X, mouse.Y, 0, 0);
-            owner.CutCopy_Unenable();
+        }
 
+        private void clone_current_bitmap_safe_dispose()
+        {
+            if (clone_current_bitmap_exists()) 
+            {
+                try { clone_currentBitmap?.Dispose(); } catch { }
+                clone_currentBitmap = null;
+            }
+        }
+
+        private bool clone_current_bitmap_exists()
+        {
+            return clone_currentBitmap != null;
         }
 
         public override void MouseMove(object sender, MouseEventArgs e)
@@ -125,31 +120,14 @@ namespace GiaoDien
                     int y = Math.Min(firstPoint.Y, mouse.Y);
                     int w = Math.Abs(mouse.X - firstPoint.X);
                     int h = Math.Abs(mouse.Y - firstPoint.Y);
-
-                    int leftLimit = owner.rt_data.Left - 70;
-                    int topLimit = owner.rt_data.Top - 27;
-                    int rightLimit = owner.rt_data.Right - 70;
-                    int bottomLimit = owner.rt_data.Bottom - 27;
-
-                    if (x + w > rightLimit)
+                    if (x + w > owner.rt_data.Width)
                     {
-                        w = rightLimit - x;
+                        w = owner.rt_data.X - x;
                     }
-                    if (y + h > bottomLimit)
+                    if (y + h > owner.rt_data.Height)
                     {
-                        h = bottomLimit - y;
+                        h = owner.rt_data.Y - y;
                     }
-                    if (x < 0)
-                    {
-                        w = firstPoint.X - leftLimit;
-                        x = leftLimit;
-                    }
-                    if (y < 0)
-                    {
-                        h = firstPoint.Y - topLimit;
-                        y = topLimit;
-                    }
-
                     if (w > 0 && h > 0)
                         selectionRect = new Rectangle(x, y, w, h);
 
@@ -225,7 +203,6 @@ namespace GiaoDien
         {
             if (isSelecting && selectionRect.Width > 0 && selectionRect.Height > 0)
             {
-                owner.CutCopy_Enable();
                 whiteRect = selectionRect;
 
                 isChoosingBitmap = new Bitmap(selectionRect.Width, selectionRect.Height);
@@ -236,6 +213,7 @@ namespace GiaoDien
                     g.DrawImage(owner.drawZone_data, dest, src, GraphicsUnit.Pixel);
                 }
 
+                clone_current_bitmap_safe_dispose();
                 clone_currentBitmap = (Bitmap)owner.drawZone_data.Clone();
             }
 
@@ -243,7 +221,6 @@ namespace GiaoDien
             activeHandle = (int)ResizeHandle.None;
             owner.Cursor = Cursors.Default;
             owner.Invalidate();
-
         }
 
         public override void OnPaint_(PaintEventArgs e)
@@ -282,18 +259,6 @@ namespace GiaoDien
                         g.FillRectangle(brush, rr);
                     }
                 }
-            }
-
-            // nếu đang có ảnh dán/đang chọn, vẽ ảnh đó lên màn hình ngay lập tức
-            if (isChoosingBitmap != null && selectionRect.Width > 0 && selectionRect.Height > 0)
-            {
-                Rectangle dest = new Rectangle(
-                    selectionRect.X + OFFSET_X,
-                    selectionRect.Y + OFFSET_Y,
-                    selectionRect.Width,
-                    selectionRect.Height
-                );
-                g.DrawImage(isChoosingBitmap, dest);
             }
         }
 
@@ -374,12 +339,32 @@ namespace GiaoDien
                 }
 
                 // 3. Xóa vùng chọn ảo đi
+                try { isChoosingBitmap?.Dispose(); } catch { }
                 isChoosingBitmap = null;
                 selectionRect = Rectangle.Empty;
                 owner.Invalidate();
             }
         }
-        
+        public void PasteImage(Bitmap pastedImg)
+        {
+            // 1. Gán ảnh từ Clipboard vào biến ảnh đang chọn
+            isChoosingBitmap = pastedImg;
+
+            // 2. Thiết lập vùng chọn nằm ở góc trái trên (0,0) với kích thước bằng ảnh
+            selectionRect = new Rectangle(0, 0, pastedImg.Width, pastedImg.Height);
+
+            // 3. Chụp lại màn hình hiện tại làm nền (Background)
+            // Lưu ý: Lúc này chưa cắt gì cả nên nền vẫn nguyên vẹn
+            clone_current_bitmap_safe_dispose();
+            clone_currentBitmap = (Bitmap)owner.drawZone_data.Clone();
+
+            // 4. Đặt vùng trắng (vùng cắt) là Rỗng
+            // (Vì đây là ảnh dán vào, không phải cắt từ nền ra nên không để lại lỗ trắng)
+            whiteRect = Rectangle.Empty;
+
+            // 5. Vẽ lại để hiển thị ảnh và khung chọn
+            owner.Invalidate();
+        }
         public override void key_Keydown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
@@ -390,6 +375,7 @@ namespace GiaoDien
                     {
                         g.FillRectangle(Brushes.White, selectionRect);
                     }
+                    try { isChoosingBitmap?.Dispose(); } catch { }
                     isChoosingBitmap = null;
                     selectionRect = Rectangle.Empty;
                     owner.Invalidate();

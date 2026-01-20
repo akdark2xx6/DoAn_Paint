@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
 
@@ -27,7 +28,21 @@ namespace GiaoDien.Tool
         }
         private void FloodFill(Bitmap bmp, Point pt, Color newColor)
         {
-            Color targetColor = bmp.GetPixel(pt.X, pt.Y);
+            // Guard: ensure bitmap and point are valid
+            if (bmp == null) return;
+            if (pt.X < 0 || pt.X >= bmp.Width || pt.Y < 0 || pt.Y >= bmp.Height) return;
+
+            Color targetColor;
+            try
+            {
+                targetColor = bmp.GetPixel(pt.X, pt.Y);
+            }
+            catch
+            {
+                // If GetPixel still fails for any reason, abort safely
+                return;
+            }
+
             if (targetColor.ToArgb() == newColor.ToArgb())
                 return;
 

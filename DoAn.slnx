@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="GiaoDien/Tool_.cs" />
+  </Folder>
   <Project Path="GiaoDien/GiaoDien.csproj" />
 </Solution>

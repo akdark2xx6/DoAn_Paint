@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 
 namespace GiaoDien
 {
@@ -26,5 +27,6 @@ namespace GiaoDien
         public virtual void Cut() { }
         public virtual void Paste(Bitmap clipboardImage) { } // Paste nhận vào ảnh từ clipboard
         public virtual void key_Keydown(object sender, KeyEventArgs e) { }
+        public virtual void CancelEdit() { }
     }
 }

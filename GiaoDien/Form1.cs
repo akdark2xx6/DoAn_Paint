@@ -21,6 +21,7 @@ namespace GiaoDien
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         private string currentFilePath = "";
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Bitmap drawZone_data { get => drawZone; set => drawZone = value; }
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -137,6 +138,7 @@ namespace GiaoDien
             lineButton.BackColor = SystemColors.ControlLight;
             curveButton.BackColor = SystemColors.ControlLight;
             Select.BackColor = SystemColors.ControlLight;
+            TextButton.BackColor = SystemColors.ControlLight;
             Invalidate();
         }
 
@@ -173,11 +175,18 @@ namespace GiaoDien
 
         }
 
+        // helper to switch tools and cancel any active edit in current tool
+        private void SetTool(Tool_ newTool)
+        {
+            try { using_?.CancelEdit(); } catch { }
+            using_ = newTool;
+        }
+
         private void pencilButton_Click(object sender, EventArgs e)
         {
             unpickingAll();
             picking(pencilButton);
-            using_ = new Pencil(this);
+            SetTool(new Pencil(this));
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
@@ -190,28 +199,28 @@ namespace GiaoDien
         {
             unpickingAll();
             picking(pickColorButton);
-            using_ = new pickColor_(this);
+            SetTool(new pickColor_(this));
         }
 
         private void eraserButton_Click(object sender, EventArgs e)
         {
             unpickingAll();
             picking(eraserButton);
-            using_ = new Eraser(this);
+            SetTool(new Eraser(this));
         }
 
         private void rectangleButton_Click(object sender, EventArgs e)
         {
             unpickingAll();
             picking(rectangleButton);
-            using_ = new Rectangle_(this);
+            SetTool(new Rectangle_(this));
         }
 
         private void fillButton_Click(object sender, EventArgs e)
         {
             unpickingAll();
             picking(fillButton);
-            using_ = new FillColor(this);
+            SetTool(new FillColor(this));
         }
 
         private void polygonButton_Click(object sender, EventArgs e)
@@ -253,7 +262,8 @@ namespace GiaoDien
         {
             unpickingAll();
             picking(Select);
-            using_ = new GiaoDien.Select(this);
+            // Use SetTool so CancelEdit is called on previous tool (fixes lingering toolbar)
+            SetTool(new GiaoDien.Select(this));
             Invalidate();
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -441,9 +451,9 @@ namespace GiaoDien
                 Image img = Clipboard.GetImage();
                 Bitmap bmp = new Bitmap(img);
 
-                using_ = null;
                 Select selectTool = new Select(this);
-                using_ = selectTool;
+                // Use SetTool so previous tool's CancelEdit() runs
+                SetTool(selectTool);
 
                 SaveHistory();
                 selectTool.PasteImage(bmp);
@@ -549,7 +559,7 @@ namespace GiaoDien
         {
             unpickingAll();
             picking(TextButton);
-            using_ = new GiaoDien.Text(this);
+            using_ = new Text_(this);
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
